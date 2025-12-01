@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <button type="submit" id="loginBtn">Login</button>
+    </form>
+    <p id="errorMsg" style="color: #ff7eb3; margin-top: 1rem;"></p>
+    <a href="index.html" style="color: white; margin-top: 1rem; display: inline-block;">Back to Home</a>
+    </div>
+
+    <script type="module">
+        import { loginUser, checkAuth } from './js/auth.js';
+
+        // Check if already logged in
+        checkAuth();
+
+        const loginForm = document.getElementById('loginForm');
+        const errorMsg = document.getElementById('errorMsg');
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                await loginUser(email, password);
+                // checkAuth will handle redirect
+            } catch (error) {
+                errorMsg.textContent = "Login failed: " + error.message;
+            }
+        });
+    </script>
+    </body>
+
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Article - Krishna CA Aspirant</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .article-container {
+            max-width: 800px;
+            width: 95%;
+            text-align: left;
+            padding: 3rem 2rem;
+        }
+
+        .article-meta {
+            color: #ff7eb3;
+            font-style: italic;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .article-content {
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+
+        .article-content h2,
+        .article-content h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #00f2fe;
+        }
+
+        .article-content p {
+            margin-bottom: 1rem;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 2rem;
+            color: #fff;
+            text-decoration: none;
+            border-bottom: 1px dashed #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            <img src="ca-logo.jpg" alt="CA Logo" height="40" />
+            <span>Krishna CA Aspirant</span>
+        </div>
+        <nav>
+            <a href="index.html">Home</a>
+        </nav>
+    </header>
+
+    <div class="container article-container">
+        <h1 id="articleTitle">Loading...</h1>
+
+        if (!id) {
+        window.location.href = 'index.html';
+        }
+
+        async function loadArticle() {
+        const article = await getArticleById(id);
+        if (article) {
+        document.title = article.title + " - Krishna CA Aspirant";
+        document.getElementById('articleTitle').textContent = article.title;
+
+        const date = article.createdAt ? new Date(article.createdAt.seconds * 1000).toLocaleDateString() : 'Just now';
+        document.getElementById('articleMeta').textContent = `Posted on ${date}`;
+
+        // Use innerHTML since we allow HTML content in articles
+        document.getElementById('articleContent').innerHTML = article.content;
+        } else {
+        document.getElementById('articleTitle').textContent = "Article not found";
+        }
+        }
+
+        loadArticle();
+        </script>
+</body>
+
+</html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Krishna CA Aspirant</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+    <header class="header">
+        <div class="logo">
+            <span>Dashboard</span>
+        </div>
+        <nav>
+            <a href="index.html">View Site</a>
+            <a href="#" id="logoutBtn" style="color: #ef4444;">Logout</a>
+        </nav>
+    </header>
+
+    <div class="container" style="padding-top: 100px; padding-bottom: 50px;">
+        <h1>Welcome, Brother! 👋</h1>
+        <p style="color: #94a3b8;">Manage your content here.</p>
+
+        <div class="dashboard-wrapper">
+            <!-- Left Column: Quotes -->
+            <div class="dashboard-panel">
+                <h2><i class="fas fa-quote-left"></i> Post a Quote</h2>
+                <form id="quoteForm">
+                    <input type="hidden" id="quoteId"> <!-- Hidden ID for editing -->
+                    <textarea id="quoteText" placeholder="Enter your quote here..." required
+                        style="min-height: 120px;"></textarea>
+                    <div style="display: flex; gap: 1rem;">
+                        <button type="submit" class="btn-primary" style="flex: 1;">Post Quote</button>
+                        <button type="button" id="clearQuote" class="btn-secondary">Clear</button>
+                    </div>
+                </form>
+
+                <div style="margin-top: 2rem;">
+                    <h3>Recent Quotes</h3>
+                    <div id="manageQuotesList" class="manage-list">
+                        <!-- List for editing/deleting -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Articles -->
+            <div class="dashboard-panel">
+                <h2><i class="fas fa-newspaper"></i> Write Article</h2>
+                <form id="articleForm">
+                    <input type="hidden" id="articleId"> <!-- Hidden ID for editing -->
+                    <input type="text" id="articleTitle" placeholder="Article Title" required>
+                    <textarea id="articleSummary" placeholder="Short Summary" required
+                        style="min-height: 80px;"></textarea>
+                    <textarea id="articleContent" placeholder="Full Content (HTML allowed)" required
+                        style="min-height: 200px;"></textarea>
+                    <div style="display: flex; gap: 1rem;">
+                        <button type="submit" class="btn-primary" style="flex: 1;">Publish Article</button>
+                        <button type="button" id="clearArticle" class="btn-secondary">Clear</button>
+                    </div>
+                </form>
+
+                <div style="margin-top: 2rem;">
+                    <h3>Recent Articles</h3>
+                    <div id="manageArticlesList" class="manage-list">
+                        <!-- List for editing/deleting -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { logoutUser, checkAuth } from './js/auth.js';
+        import { addQuote, addArticle, getQuotes, getArticles, deleteQuote, deleteArticle, updateQuote, updateArticle } from './js/db.js';
+
+        // Protect route
+        checkAuth(true);
+
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            await logoutUser();
+            window.location.href = 'index.html';
+        });
+
+        // --- Quotes Logic ---
+        const quoteForm = document.getElementById('quoteForm');
+        const quoteIdInput = document.getElementById('quoteId');
+        const quoteTextInput = document.getElementById('quoteText');
+
+        async function refreshQuotesList() {
+            const list = document.getElementById('manageQuotesList');
+            list.innerHTML = 'Loading...';
+            const quotes = await getQuotes();
+            list.innerHTML = '';
+            quotes.forEach(q => {
+                const div = document.createElement('div');
+                div.className = 'manage-item';
+                div.innerHTML = `
+                <span style="font-size: 0.9rem; color: #ccc;">${q.text.substring(0, 30)}...</span>
+                <div class="manage-actions">
+                    <button class="btn-small btn-secondary edit-quote" data-id="${q.id}" data-text="${q.text.replace(/"/g, '&quot;')}"><i class="fas fa-edit"></i></button>
+                    <button class="btn-small btn-danger delete-quote" data-id="${q.id}"><i class="fas fa-trash"></i></button>
+                </div>
+            `;
+                list.appendChild(div);
+            });
+
+            // Attach listeners
+            document.querySelectorAll('.delete-quote').forEach(btn => {
+                btn.onclick = async () => {
+                    if (confirm('Delete this quote?')) {
+                        await deleteQuote(btn.dataset.id);
+                        refreshQuotesList();
+                    }
+                };
+            });
+            document.querySelectorAll('.edit-quote').forEach(btn => {
+                btn.onclick = () => {
+                    quoteIdInput.value = btn.dataset.id;
+                    quoteTextInput.value = btn.dataset.text; // Use dataset for safety
+                    quoteForm.querySelector('button[type="submit"]').textContent = "Update Quote";
+                };
+            });
+        }
+
+        document.getElementById('clearQuote').onclick = () => {
+            quoteForm.reset();
+            quoteIdInput.value = '';
+            quoteForm.querySelector('button[type="submit"]').textContent = "Post Quote";
+        };
+
+        quoteForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const text = quoteTextInput.value;
+            const id = quoteIdInput.value;
+
+            try {
+                if (id) {
+                    await updateQuote(id, text);
+                    alert('Quote updated!');
+                } else {
+                    await addQuote(text);
+                    alert('Quote posted!');
+                }
+                document.getElementById('clearQuote').click();
+                refreshQuotesList();
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        });
+
+        // --- Articles Logic ---
+        const articleForm = document.getElementById('articleForm');
+        const articleIdInput = document.getElementById('articleId');
+        const articleTitleInput = document.getElementById('articleTitle');
+        const articleSummaryInput = document.getElementById('articleSummary');
+        const articleContentInput = document.getElementById('articleContent');
+
+        async function refreshArticlesList() {
+            const list = document.getElementById('manageArticlesList');
+            list.innerHTML = 'Loading...';
+            const articles = await getArticles();
+            list.innerHTML = '';
+            articles.forEach(a => {
+                const div = document.createElement('div');
+                div.className = 'manage-item';
+                div.innerHTML = `
+                <span style="font-size: 0.9rem; color: #ccc;">${a.title}</span>
+                <div class="manage-actions">
+                    <button class="btn-small btn-secondary edit-article" data-id="${a.id}"><i class="fas fa-edit"></i></button>
+                    <button class="btn-small btn-danger delete-article" data-id="${a.id}"><i class="fas fa-trash"></i></button>
+                </div>
+            `;
+                // Store data object on element to avoid messy HTML attributes
+                div.querySelector('.edit-article').articleData = a;
+                list.appendChild(div);
+            });
+
+            document.querySelectorAll('.delete-article').forEach(btn => {
+                btn.onclick = async () => {
+                    if (confirm('Delete this article?')) {
+                        await deleteArticle(btn.dataset.id);
+                        refreshArticlesList();
+                    }
+                };
+            });
+            document.querySelectorAll('.edit-article').forEach(btn => {
+                btn.onclick = (e) => {
+                    const data = e.currentTarget.articleData;
+                    articleIdInput.value = data.id;
+                    articleTitleInput.value = data.title;
+                    articleSummaryInput.value = data.summary;
+                    articleContentInput.value = data.content;
+                    articleForm.querySelector('button[type="submit"]').textContent = "Update Article";
+                };
+            });
+        }
+
+        document.getElementById('clearArticle').onclick = () => {
+            articleForm.reset();
+            articleIdInput.value = '';
+            articleForm.querySelector('button[type="submit"]').textContent = "Publish Article";
+        };
+
+        articleForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const title = articleTitleInput.value;
+            const summary = articleSummaryInput.value;
+            const content = articleContentInput.value;
+            const id = articleIdInput.value;
+
+            try {
+                if (id) {
+                    await updateArticle(id, title, content, summary);
+                    alert('Article updated!');
+                } else {
+                    await addArticle(title, content, summary);
+                    alert('Article published!');
+                }
+                document.getElementById('clearArticle').click();
+                refreshArticlesList();
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        });
+
+        // Initial Load
+        refreshQuotesList();
+        refreshArticlesList();
+
+    </script>
+</body>
+
+</html>

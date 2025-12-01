@@ -1,76 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Krishna CA Aspirant</title>
   <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
 <body>
   <!-- Header -->
   <header class="header">
     <div class="logo">
       <img src="ca-logo.jpg" alt="CA Logo" height="40" />
-      <span>Krishna CA Aspirant</span>
+      <span>Krishna CA</span>
     </div>
     <nav>
-      <a href="#">Home</a>
-      <a href="#">About</a>
-      <a href="#">Journey</a>
-      <a href="#">Contact</a>
+      <a href="#home">Home</a>
+      <a href="#quotes">Quotes</a>
+      <a href="#articles">Articles</a>
     </nav>
   </header>
 
-  <!-- Animated CA symbols floating background -->
-<div class="ca-symbols">
-  <span class="ca-symbol" style="top:10%;left:5%;animation-delay:0s;">₹</span>
-  <span class="ca-symbol" style="top:30%;left:80%;animation-delay:2s;">%</span>
-  <span class="ca-symbol" style="top:60%;left:20%;animation-delay:4s;">∞</span>
-  <span class="ca-symbol" style="top:75%;left:60%;animation-delay:6s;">π</span>
-  <span class="ca-symbol" style="top:50%;left:40%;animation-delay:8s;">Σ</span>
-  <span class="ca-symbol" style="top:20%;left:70%;animation-delay:10s;">CA</span>
-  <span class="ca-symbol" style="top:15%;left:25%;animation-delay:1s;">1</span>
-  <span class="ca-symbol" style="top:35%;left:60%;animation-delay:3s;">2</span>
-  <span class="ca-symbol" style="top:55%;left:10%;animation-delay:5s;">3</span>
-  <span class="ca-symbol" style="top:80%;left:30%;animation-delay:7s;">4</span>
-  <span class="ca-symbol" style="top:65%;left:75%;animation-delay:9s;">5</span>
-  <span class="ca-symbol" style="top:40%;left:50%;animation-delay:11s;">6</span>
-  <span class="ca-symbol" style="top:25%;left:85%;animation-delay:12s;">7</span>
-  <span class="ca-symbol" style="top:70%;left:15%;animation-delay:13s;">8</span>
-  <span class="ca-symbol" style="top:85%;left:55%;animation-delay:14s;">9</span>
-  <span class="ca-symbol" style="top:30%;left:35%;animation-delay:15s;">0</span>
-</div>
-
-  <!-- Main Content -->
-  <main class="container">
-    <section class="hero">
-      <h1 id="title">Welcome to Krishna's CA Journey</h1>
-      <p class="subtitle">"Success is not the key to happiness. Happiness is the key to success. If you love what you are doing, you will be successful." – Albert Schweitzer</p>
-      <button id="magicButton">Explore More</button>
-    </section>
-    <section class="quotes-slider">
-    <div class="slider-container">
-        <div class="quote-card active">“A Chartered Accountant is not just a degree, it’s a responsibility.”</div>
-        <div class="quote-card">“Dream big, work hard, stay focused, and surround yourself with good people.”</div>
-        <div class="quote-card">“The journey of a thousand miles begins with a single step.” – Lao Tzu</div>
-        <div class="quote-card">“Success doesn’t come from what you do occasionally, it comes from what you do consistently.”</div>
-        <div class="quote-card">“CA is not just a course, it’s a way of life.”</div>
-        <div class="quote-card">“Accountancy is the language of business.”</div>
-        <div class="quote-card">“Numbers don’t lie, but they do tell a story.”</div>
+  <!-- Hero Section -->
+  <section class="hero" id="home">
+    <div class="container">
+      <h1 id="title">Welcome to Krishna's Journey</h1>
+      <p class="subtitle">"Success is not the key to happiness. Happiness is the key to success. If you love what you
+        are doing, you will be successful."</p>
+      <button id="magicButton" class="btn-primary">Inspire Me ✨</button>
     </div>
-    </section>
-  </main>
+  </section>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="footer-left">
-      <span>“The harder you work for something, the greater you’ll feel when you achieve it.”</span>
+  <!-- Quotes Section -->
+  <section class="quotes-section" id="quotes">
+    <h2 class="section-title">Daily Inspiration</h2>
+    <div class="container">
+      <div class="quotes-grid" id="quotesContainer">
+        <!-- Quotes will be loaded here -->
+        <div class="quote-card">
+          <p class="quote-text">Loading quotes...</p>
+        </div>
+      </div>
     </div>
-    <div class="footer-right">
-      &copy; 2025, made by sid❤️@iiserbpr
-    </div>
-  </footer>
+  </section>
 
-  <script src="script.js"></script>
+  <!-- Articles Section -->
+  <section class="articles-section" id="articles">
+    <h2 class="section-title">My Thoughts & Articles</h2>
+    <div class="container">
+      <div class="articles-grid" id="articlesList">
+        <!-- Articles will be loaded here -->
+        <p style="text-align: center; color: #94a3b8;">Loading articles...</p>
+      </div>
+
+
+      <script type="module" src="script.js"></script>
 </body>
+
 </html>
