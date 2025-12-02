@@ -18,9 +18,11 @@
             <div class="form-group">
                 <input type="password" id="password" placeholder="Password" required>
             </div>
-            <button type="submit" id="loginBtn">Login</button>
+            <button type="submit" id="loginBtn">
+                <span class="btn-text">Login</span>
+            </button>
         </form>
-        <p id="errorMsg" style="color: #ff7eb3; margin-top: 1rem;"></p>
+        <div id="errorMsg"></div>
         <a href="index.html" style="color: white; margin-top: 1rem; display: inline-block;">Back to Home</a>
     </div>
 
@@ -32,17 +34,61 @@
 
         const loginForm = document.getElementById('loginForm');
         const errorMsg = document.getElementById('errorMsg');
+        const loginBtn = document.getElementById('loginBtn');
+        const btnText = loginBtn.querySelector('.btn-text');
+
+        // Create spinner element
+        const spinner = document.createElement('div');
+        spinner.className = 'spinner';
+        spinner.style.display = 'none';
+        loginBtn.insertBefore(spinner, btnText);
+
+        const setLoading = (isLoading) => {
+            if (isLoading) {
+                loginBtn.classList.add('btn-loading');
+                loginBtn.disabled = true;
+                spinner.style.display = 'inline-block';
+                btnText.textContent = 'Logging in...';
+                errorMsg.classList.remove('visible');
+                errorMsg.textContent = '';
+            } else {
+                loginBtn.classList.remove('btn-loading');
+                loginBtn.disabled = false;
+                spinner.style.display = 'none';
+                btnText.textContent = 'Login';
+            }
+        };
+
+        const showError = (message) => {
+            errorMsg.textContent = message;
+            errorMsg.classList.add('visible');
+        };
 
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
+            setLoading(true);
+
             try {
                 await loginUser(email, password);
-                // checkAuth will handle redirect
+                // Success!
+                btnText.textContent = 'Success! Redirecting...';
+                // Force redirect after a short delay to ensure user sees success state
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 500);
             } catch (error) {
-                errorMsg.textContent = "Login failed: " + error.message;
+                console.error("Login error:", error);
+                setLoading(false);
+                let message = "Login failed. Please check your credentials.";
+                if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+                    message = "Invalid email or password.";
+                } else if (error.code === 'auth/too-many-requests') {
+                    message = "Too many failed attempts. Please try again later.";
+                }
+                showError(message);
             }
         });
     </script>
